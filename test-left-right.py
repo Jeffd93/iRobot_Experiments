@@ -5,7 +5,7 @@ import cv2 as cv
 from  pycreate2 import Create2
 import time
 
-port = "/dev/ttyUSB1"  # where is your serial port?
+port = "/dev/ttyUSB0"  # where is your serial port?
 bot = Create2(port)
 bot.start()
 bot.safe()
@@ -112,43 +112,40 @@ try:
                 cv.FONT_HERSHEY_SIMPLEX, 
                 0.5, (0,255,0), 2)
             
-
-            
+            xmin = 320
+            xmax = 640
+            print("="*10)
             print("x: ", x)
-            if x > 640:
+            if x > xmax:
                 #  turn right
-                bot_centered = False
                 print("Turning right!")
                 bot.drive_direct(-50, 50)
                 time.sleep(.7)
                 bot.drive_stop()
-            elif x < 320:
+            elif x < xmin:
                 # turn left
-                bot_centered = False
                 print("Turning left!")
                 bot.drive_direct(50, -50)
                 time.sleep(.7)
                 bot.drive_stop()
-            elif x >= 320 or x <= 640:
+            elif x >= xmin and x <= xmax:
                 bot_centered = True
                 print("Marker centered!")
                 # bot.drive_stop()
             
             
-            # commenting out code to maintain straight-line distance.
-            if bot_centered:
-                if dist > 0.60: # if robot is farther than 50 cm from image...
-                    bot.drive_direct(50, 50) # move closer
-                    # time.sleep(1)
-                    print("Distance = " + str(int(dist*100)) + " cm. Moving Forward!")
-                elif dist < 0.4: 
-                    bot.drive_direct(-50, -50) # move further
-                    # time.sleep(1)
-                    print("Distance = " + str(int(dist*100)) + " cm. Moving Backward!")
-                else:
-                    bot.drive_stop() # stop moving once 50cm from image
-                    print("Distance =", str(int(dist*100)), "cm. Stopped")
-    
+            if dist > 0.60: # if robot is farther than 50 cm from image...
+                bot.drive_direct(50, 50) # move closer
+                # time.sleep(1)
+                print("Distance = " + str(int(dist*100)) + " cm. Moving Forward!")
+            elif dist < 0.4: 
+                bot.drive_direct(-50, -50) # move further
+                # time.sleep(1)
+                print("Distance = " + str(int(dist*100)) + " cm. Moving Backward!")
+            else:
+                bot.drive_stop() # stop moving once 50cm from image
+                print("Distance =", str(int(dist*100)), "cm. Stopped")
+        
         # Remove background - Set pixels further than clipping_distance to grey
         #grey_color = 153
         #depth_image_3d = np.dstack((depth_image,depth_image,depth_image)) #depth image is 1 channel, color is 3 channels
